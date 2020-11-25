@@ -11,14 +11,14 @@
   
       
       - name: Check if git repo exists
-        stat: path=/opt/Yolo
+        stat: path=/opt/yolo-1
         register: repo_stat
   
 
-      - name: Fetch Yolo git repo
+      - name: Fetch yolo git repo
         git:
-          repo: https://github.com/eve320/Yolo.git
-          dest: path=/opt/Yolo
+          repo: https://github.com/eve320/yolo-1.git
+          dest: path=/opt/yolo-1
         when: not repo_stat.stat.exists
     
     
@@ -36,16 +36,16 @@
                        - build-essential
                   
               - name: Check git repo folder exists
-                stat: path=/opt/Yolo/client
+                stat: path=/opt/yolo-1/client
                 register: git_stat
                   
               - name: Copy the client directory to vagrant
-                command: mv /opt/Yolo/client  /home/vagrant
+                command: mv /opt/yolo-1/client  /home/vagrant
                 when: git_stat.stat.exists
       
               - name: Install required modules in package.json
                 command: >
-                    chdir=/home/vagrant/
+                    chdir=/home/vagrant/client
                     npm run build
               - name: Run NPM for production
                 command: >
@@ -72,17 +72,17 @@
                               - nodejs
                               - npm
                   - name: Check git repo folder exists.
-                    stat: path=/opt/Yolo/backend
+                    stat: path=/opt/yolo-1/backend
                     register: git_stat
                     
                   - name: Install required modules in  package.json
                     command: >
-                              chdir=/home/vagrant/backend
-                              npm install
+                        chdir=/home/vagrant/backend
+                        npm install
                   - name: Install PM2 (to run our app)
                     command: >
-                              chdir=/home/vagrant/backend
-                              npm install pm2 -g
+                        chdir=/home/vagrant/backend
+                        npm install pm2 -g
                   - name: Spawn PM2 to become active
                     become: yes
                     become_user: vagrant
@@ -95,8 +95,8 @@
                     become: yes
                     become_user: vagrant
                     command: >
-                              chdir=/home/vagrant/backend
-                              pm2 start --name yolo_app npm -- start
+                        chdir=/home/vagrant/backend
+                        pm2 start --name yolo-1_app npm -- start
                     
                   - name: Save the list of process for automatic restart after a system reboot
                     command: pm2 Save
